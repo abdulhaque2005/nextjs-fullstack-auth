@@ -6,13 +6,13 @@ A production-ready full-stack authentication system built with **Next.js 16 (App
 
 ## Features
 
-- 🔐 **Secure Cookie-Based Authentication**: HTTP-only, secure, same-site cookies prevent XSS and CSRF token tampering.
-- 🛡️ **Edge Route Protection (`proxy.ts`)**: Built using Next.js 16's modern `proxy` convention to protect private routes (`/dashboard`) and redirect authenticated sessions away from auth pages (`/login`, `/signup`).
-- 🔑 **Cryptographic Token Verification**: Fast, edge-compatible JWT signing and verification powered by `jose`.
-- 🔒 **Password Security**: Passwords hashed with `bcryptjs` (salt rounds: 10) before storing.
-- 📝 **Strict Form Validation**: Type-safe validation on both client and server using `zod` and `react-hook-form`.
-- 📊 **Interactive Dashboard**: Protected dashboard displaying real authenticated user sessions and statistics.
-- 🎨 **Modern UI**: Styled with Tailwind CSS, Lucide icons, and Sonner toast notifications.
+- **Secure Cookie-Based Authentication**: HTTP-only, secure, same-site cookies prevent XSS and CSRF token tampering.
+- **Edge Route Protection (`proxy.ts`)**: Built using Next.js 16's modern `proxy` convention to protect private routes (`/dashboard`) and redirect authenticated sessions away from auth pages (`/login`, `/signup`).
+- **Cryptographic Token Verification**: Fast, edge-compatible JWT signing and verification powered by `jose`.
+- **Password Security**: Passwords hashed with `bcryptjs` (salt rounds: 10) before storing.
+- **Strict Form Validation**: Type-safe validation on both client and server using `zod` and `react-hook-form`.
+- **Interactive Dashboard**: Protected dashboard displaying real authenticated user sessions and statistics.
+- **Modern UI**: Styled with Tailwind CSS, Lucide icons, and Sonner toast notifications.
 
 ---
 
@@ -88,7 +88,7 @@ A production-ready full-stack authentication system built with **Next.js 16 (App
 
 ### 2. Clone the Repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/nextjs-fullstack-auth.git
+git clone https://github.com/abdulhaque2005/nextjs-fullstack-auth.git
 cd nextjs-fullstack-auth
 ```
 
