@@ -14,6 +14,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const result = loginSchema.safeParse(body);
 
+    // 1. Validation check
     if (!result.success) {
       return Response.json(
         {
@@ -25,38 +26,57 @@ export async function POST(request: Request) {
       );
     }
 
+    const { email, password } = result.data;
+
+    // 2. Connect to database
     await connectToDatabase();
 
-    const user = await User.findOne({ email: result.data.email });
+    // 3. Find user by email
+    const user = await User.findOne({ email });
     if (!user) {
       return Response.json(
         {
           success: false,
           data: null,
-          message: "Invalid email or password",
+          message: "User not found with this email",
         },
-        { status: 401 }
+        { status: 404 }
       );
     }
 
-    // Verify hashed password
-    const isPasswordValid = await bcrypt.compare(
-      result.data.password,
-      user.password
-    );
+    // 4. Verify password (supports both bcrypt hash and legacy plain text)
+    let isPasswordValid = false;
+
+    if (user.password === password) {
+      // Legacy plain-text password match -> auto-upgrade to bcrypt
+      isPasswordValid = true;
+      try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await User.updateOne({ _id: user._id }, { password: hashedPassword });
+      } catch (err) {
+        console.error("Auto-hash error:", err);
+      }
+    } else {
+      // Check bcrypt hash
+      try {
+        isPasswordValid = await bcrypt.compare(password, user.password);
+      } catch {
+        isPasswordValid = false;
+      }
+    }
 
     if (!isPasswordValid) {
       return Response.json(
         {
           success: false,
           data: null,
-          message: "Invalid email or password",
+          message: "Invalid password",
         },
         { status: 401 }
       );
     }
 
-    // Set secure HTTP-only cookie with JWT token
+    // 5. Create secure HTTP-only cookie with JWT session
     await createSession({
       userId: user._id.toString(),
       email: user.email,
@@ -76,11 +96,12 @@ export async function POST(request: Request) {
       { status: 200 }
     );
   } catch (error: any) {
+    console.error("Login API error:", error);
     return Response.json(
       {
         success: false,
         data: null,
-        message: error?.message || "Something went wrong",
+        message: error?.message || "Server error occurred",
       },
       { status: 500 }
     );

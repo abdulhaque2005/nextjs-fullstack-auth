@@ -66,7 +66,7 @@ export default function LoginPage() {
       }
 
       toast.success(result.message);
-      router.push("/dashboard");
+      window.location.href = "/dashboard";
     } catch {
       setServerError("Something went wrong. Please try again.");
       toast.error("Something went wrong. Please try again.");

@@ -5,7 +5,6 @@ export type { SessionPayload };
 
 /**
  * Creates an encrypted session cookie containing the JWT token.
- * Sets standard security options: httpOnly, secure (in prod), sameSite.
  */
 export async function createSession(payload: SessionPayload): Promise<string> {
   const token = await signToken(payload);
@@ -24,7 +23,6 @@ export async function createSession(payload: SessionPayload): Promise<string> {
 
 /**
  * Retrieves the current user session from the cookie.
- * Can be used in Server Components, Server Actions, and Route Handlers.
  */
 export async function getSession(): Promise<SessionPayload | null> {
   const cookieStore = await cookies();
@@ -38,9 +36,24 @@ export async function getSession(): Promise<SessionPayload | null> {
 }
 
 /**
- * Deletes the session cookie upon logout.
+ * Deletes the session cookie completely upon logout.
  */
 export async function deleteSession(): Promise<void> {
   const cookieStore = await cookies();
+
+  // Expire and delete main auth token
+  cookieStore.set(COOKIE_NAME, "", {
+    path: "/",
+    expires: new Date(0),
+    maxAge: 0,
+  });
   cookieStore.delete(COOKIE_NAME);
+
+  // Also clean up any legacy 'user' cookie
+  cookieStore.set("user", "", {
+    path: "/",
+    expires: new Date(0),
+    maxAge: 0,
+  });
+  cookieStore.delete("user");
 }

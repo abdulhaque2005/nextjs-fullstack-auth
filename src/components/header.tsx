@@ -22,8 +22,7 @@ export default function Header({ user }: HeaderProps) {
       });
       const data = await response.json();
       toast.success(data.message || "Logged out successfully");
-      router.push("/login");
-      router.refresh();
+      window.location.href = "/login";
     } catch {
       toast.error("Failed to log out");
     }
